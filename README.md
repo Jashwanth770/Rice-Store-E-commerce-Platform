@@ -116,8 +116,8 @@ This project is open-sourced under the MIT License. (You can choose another lice
 
 ### 📧 Contact
 
-* **[Your Name/Alias]**
-* **GitHub:** [Your GitHub Profile Link]
-* **LinkedIn:** [Your LinkedIn Profile Link (Optional)]
+* **JASHWANTHSAI MURARISHETTI**
+* **GitHub:** https://github.com/Jashwanth770
+* **LinkedIn:** https://www.linkedin.com/in/jashwanthsai-murarishetti/
 
 ---
