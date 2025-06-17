@@ -1,0 +1,95 @@
+{# templates/checkout_summary.html #}
+{% extends "base.html" %}
+
+{% block title %}Checkout Summary{% endblock %}
+
+{% block content %}
+<div class="container checkout-container">
+    <h1 class="checkout-title">Checkout Summary</h1>
+
+    <div class="order-summary-section">
+        <h2>Order Details</h2>
+        {% if cart_items %}
+        <table class="data-table cart-summary-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>
+                        <div class="product-info-cell">
+                            <img src="{{ url_for('static', filename='product_pics/' + item.product.image_file) }}" alt="{{ item.product.name }}" class="product-thumb">
+                            <a href="{{ url_for('product_detail', product_id=item.product.id) }}">{{ item.product.name }}</a>
+                        </div>
+                    </td>
+                    <td>&#8377;{{ '%.2f' % item.product.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>&#8377;{{ '%.2f' % (item.product.price * item.quantity) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-right total-label">Total:</td>
+                    <td class="total-price">&#8377;{{ '%.2f' % total_price }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        {% else %}
+        <p class="text-center">Your cart is empty.</p>
+        {% endif %}
+    </div>
+
+    <div class="shipping-address-section" style="max-width: 500px; margin: 0 auto;">
+        <h2 style="font-size: 1.3rem; font-weight: 500; margin-bottom: 16px;">Delivery Address</h2>
+        <div style="background: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 24px 20px 16px 20px;">
+            <form method="POST" action="{{ url_for('checkout_summary') }}">
+                {{ form.hidden_tag() }}
+                <div class="form-group mb-3">
+                    {{ form.address.label(class="form-label", style="font-weight: 500;") }}
+                    {{ form.address(class="form-control", rows=3, placeholder="House number, street, area, city, state, pincode") }}
+                    <small class="form-text text-muted" style="font-size: 0.95em;">Please enter your full delivery address, just like you would on Amazon.</small>
+                    {% for error in form.address.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group payment-options">
+                    {% for subfield in form.payment_method %}
+                        <div class="form-check">
+                            {{ subfield(class="form-check-input") }}
+                            {{ subfield.label(class="form-check-label") }}
+                        </div>
+                    {% endfor %}
+                    {% if form.payment_method.errors %}
+                        <ul class="errors">
+                            {% for error in form.payment_method.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.submit(class="btn-amazon btn-lg btn-block") }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="invoice-section">
+        <h2>Invoice Bill</h2>
+        <div class="invoice-details">
+            <p><strong>Invoice Number:</strong> INV-{{ '%06d' % (current_user.id * 1000 + cart_items|length) }}</p>
+            <p><strong>Date:</strong> {{ now().strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p><strong>Customer:</strong> {{ current_user.username }}</p>
+            <p><strong>Email:</strong> {{ current_user.email }}</p>
+            <p><strong>Total Amount:</strong> &#8377;{{ '%.2f' % total_price }}</p>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,104 @@
+<style>
+.amazon-login-container {
+    max-width: 400px;
+    margin: 60px auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 32px 28px 24px 28px;
+}
+.amazon-login-title {
+    font-size: 1.7rem;
+    font-weight: 500;
+    margin-bottom: 24px;
+    color: #111;
+    letter-spacing: 0.5px;
+}
+.amazon-login-label {
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+.amazon-login-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #a6a6a6;
+    border-radius: 4px;
+    margin-bottom: 18px;
+    font-size: 1rem;
+}
+.btn-amazon {
+    width: 100%;
+    background-color: #ffd814;
+    color: #111;
+    border: 1px solid #fcd200;
+    border-radius: 8px;
+    font-weight: bold;
+    padding: 10px 0;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.btn-amazon:hover, .btn-amazon:focus {
+    background-color: #f7ca00;
+    color: #111;
+    text-decoration: none;
+}
+.amazon-login-footer {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 0.95rem;
+}
+.amazon-login-footer a {
+    color: #0066c0;
+    text-decoration: none;
+}
+.amazon-login-footer a:hover {
+    text-decoration: underline;
+}
+</style>
+<div class="amazon-login-container">
+    <div class="amazon-login-title">Create account</div>
+    <form method="POST" action="">
+        {{ form.csrf_token }}
+        <div>
+            {{ form.username.label(class="amazon-login-label") }}
+            {{ form.username(class="amazon-login-input", placeholder="Your name") }}
+            {% for error in form.username.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.email.label(class="amazon-login-label") }}
+            {{ form.email(class="amazon-login-input", placeholder="Email") }}
+            {% for error in form.email.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.phone_number.label(class="amazon-login-label") }}
+            {{ form.phone_number(class="amazon-login-input", placeholder="Mobile number") }}
+            {% for error in form.phone_number.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.password.label(class="amazon-login-label") }}
+            {{ form.password(class="amazon-login-input", placeholder="Password") }}
+            {% for error in form.password.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.confirm_password.label(class="amazon-login-label") }}
+            {{ form.confirm_password(class="amazon-login-input", placeholder="Re-enter password") }}
+            {% for error in form.confirm_password.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn-amazon">Create your account</button>
+    </form>
+    <div class="amazon-login-footer">
+        Already have an account? <a href="{{ url_for('login') }}">Sign-In</a>
+    </div>
+</div>

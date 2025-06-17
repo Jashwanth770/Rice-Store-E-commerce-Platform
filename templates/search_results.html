@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Search Results for "{{ query }}"</h1>
+    {% if products %}
+        <div class="row">
+            {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ url_for('static', filename='product_pics/' + product.image_file) }}" class="card-img-top" alt="{{ product.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">₹{{ "%.2f"|format(product.price) }} / kg</p>
+                            <p class="card-text">Stock: {{ product.stock }} kg</p>
+                            <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn-amazon">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No products found matching your search.</p>
+    {% endif %}
+{% endblock content %}

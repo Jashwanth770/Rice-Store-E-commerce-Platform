@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container my-5">
+        <div class="row">
+            {# Left Column: Product Image #}
+            <div class="col-md-5 mb-4">
+                <div class="card p-3 shadow-sm h-100"> {# Added card for image for styling #}
+                    <img src="{{ url_for('static', filename='product_pics/' + product.image_file) }}"
+                         class="img-fluid product-detail-img" alt="{{ product.name }}">
+                </div>
+            </div>
+
+            {# Right Column: Product Details and Add to Cart #}
+            <div class="col-md-7 mb-4">
+                <div class="card p-4 shadow-sm h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h1 class="mb-3">{{ product.name }}</h1>
+                        <p class="lead text-muted">{{ product.description }}</p>
+                        <hr>
+                        <p class="price-detail">Price: ₹{{ "%.2f"|format(product.price) }} / kg</p>
+                        <p class="stock-detail">Stock: {{ product.stock }} kg</p>
+                        <p class="category-detail">Category: {{ product.category }}</p>
+                    </div>
+
+                    <div class="mt-4"> {# Add to Cart section #}
+                        {% if product.stock > 0 %}
+                            <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" class="d-flex align-items-center">
+                                <label for="quantity" class="form-label me-2 mb-0">Quantity:</label>
+                                <input type="number" name="quantity" id="quantity" value="1"
+                                       min="1" max="{{ product.stock }}"
+                                       class="form-control quantity-input detail-page me-3">
+                                <button type="submit" class="btn-amazon btn-lg flex-grow-1">Add to Cart</button>
+                            </form>
+                        {% else %}
+                            <div class="alert alert-warning" role="alert">
+                                Out of Stock!
+                            </div>
+                        {% endif %}
+                        <a href="{{ url_for('home') }}" class="btn-amazon-secondary mt-3">Back to Products</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

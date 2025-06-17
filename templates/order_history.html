@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}My Orders{% endblock %}
+{% block content %}
+    <h2>My Order History</h2>
+
+    {% if orders %}
+        {% for order in orders %}
+            <div class="order-summary">
+                <h3>Order ID: {{ order.id }} ({{ order.status }})</h3>
+                <p>Order Date: {{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                <p>Total: ₹{{ "%.2f" | format(order.total_price) }}</p>
+
+                <h4>Items:</h4>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity (kg)</th>
+                            <th>Price/kg</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items %}
+                            <tr>
+                                <td>{{ item.product.name }}</td> {# Access product through relationship #}
+                                <td>{{ item.quantity }}</td>
+                                <td>₹{{ "%.2f" | format(item.price_at_purchase) }}</td>
+                                <td>₹{{ "%.2f" | format(item.quantity * item.price_at_purchase) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <hr> {# Separator between orders #}
+        {% endfor %}
+    {% else %}
+        <p>You have not placed any orders yet.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('home') }}" class="button">Continue Shopping</a></p>
+{% endblock %}

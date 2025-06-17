@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Basmati Rice (1121 Sella)",
+        "quantity": 1000.0,
+        "price_per_unit": 75.0
+    },
+    {
+        "name": "Paddy (IR 64)",
+        "quantity": 5000.0,
+        "price_per_unit": 22.0
+    },
+    {
+        "name": "Sona Masoori Rice",
+        "quantity": 750.0,
+        "price_per_unit": 55.0
+    }
+]

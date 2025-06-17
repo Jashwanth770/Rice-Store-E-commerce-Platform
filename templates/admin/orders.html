@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>{{ title }}</h1>
+        </div>
+        <div class="col text-end">
+            <form action="{{ url_for('admin_search_invoices') }}" method="GET" class="d-flex justify-content-end">
+                <input type="text" name="query" class="form-control me-2" style="max-width: 300px;" 
+                       placeholder="Search by Order ID or Customer Name" value="{{ query if query else '' }}">
+                <button type="submit" class="btn-amazon-secondary">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% if orders %}
+    <div class="row row-cols-1 g-4">
+        {% for order in orders %}
+        <div class="col">
+            <div class="card h-100 flex-row align-items-center p-3">
+                <div class="flex-grow-1">
+                    <div class="d-flex flex-wrap align-items-center mb-2">
+                        <h5 class="mb-0 me-3">Order #{{ order.id }}</h5>
+                        <span class="badge {% if order.status == 'Pending' %}bg-warning
+                                         {% elif order.status == 'Pending COD' %}bg-info
+                                         {% elif order.status == 'Payment Pending' %}bg-danger
+                                         {% elif order.status == 'Shipped' %}bg-primary
+                                         {% elif order.status == 'Delivered' %}bg-success
+                                         {% else %}bg-secondary{% endif %} ms-2">
+                            {{ order.status }}
+                        </span>
+                    </div>
+                    <div class="mb-1"><strong>Customer:</strong> {{ order.customer.username }}</div>
+                    <div class="mb-1"><strong>Date:</strong> {{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</div>
+                    <div class="mb-1"><strong>Total:</strong> &#8377;{{ '%.2f' % order.total_amount }}</div>
+                </div>
+                <div class="ms-auto">
+                    <div class="dropdown">
+                        <button class="btn-amazon dropdown-toggle" type="button" id="orderActions{{ order.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="orderActions{{ order.id }}">
+                            <li>
+                                <a href="{{ url_for('order_detail', order_id=order.id) }}" class="dropdown-item">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Change Status</h6></li>
+                            <li>
+                                <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="status" value="Pending">
+                                    <button type="submit" class="dropdown-item text-warning">Set as Pending</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="status" value="Pending COD">
+                                    <button type="submit" class="dropdown-item text-info">Set as Pending COD</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="status" value="Payment Pending">
+                                    <button type="submit" class="dropdown-item text-danger">Set as Payment Pending</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="status" value="Shipped">
+                                    <button type="submit" class="dropdown-item text-primary">Set as Shipped</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="status" value="Delivered">
+                                    <button type="submit" class="dropdown-item text-success">Set as Delivered</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="status" value="Cancelled">
+                                    <button type="submit" class="dropdown-item text-danger">Set as Cancelled</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No orders found.
+    </div>
+    {% endif %}
+</div>
+{% endblock content %} 

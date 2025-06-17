@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="account-container">
+    <div class="account-card">
+        <img class="profile-pic" src="{{ image_file }}" alt="Profile Picture">
+        <h2 class="card-title">{{ current_user.username }}</h2> {# Corrected line 6 #}
+        <p class="card-text"><strong>Email:</strong> {{ current_user.email }}</p> {# Corrected line 7 #}
+        <p class="card-text"><strong>Phone Number:</strong> {{ current_user.phone_number }}</p> {# Likely needs correction too #}
+
+        <hr>
+
+        <h3>Update Account Information</h3>
+        <form method="POST" action="{{ url_for('account') }}" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.username.label }}
+                {{ form.username(class="form-control") }}
+                {% if form.username.errors %}
+                    <ul class="errors">
+                        {% for error in form.username.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control") }}
+                {% if form.email.errors %}
+                    <ul class="errors">
+                        {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.picture.label }}
+                {{ form.picture(class="form-control-file") }}
+                {% if form.picture.errors %}
+                    <ul class="errors">
+                        {% for error in form.picture.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn-amazon">Update</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

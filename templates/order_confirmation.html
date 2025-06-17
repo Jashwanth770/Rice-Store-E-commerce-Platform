@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Order Confirmation</h2>
+
+    {% if order %}
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            Order #{{ order.id }} Successfully Placed!
+        </div>
+        <div class="card-body">
+            <p>Thank you for your purchase, {{ current_user.username }}!</p>
+            <p><strong>Order Date:</strong> {{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p><strong>Order Status:</strong> {{ order.status }}</p>
+
+            {# If you implement OrderItem model, uncomment this section #}
+            {#
+            <h4>Items in your order:</h4>
+            <ul class="list-group mb-3">
+                {% for item in order_items %}
+                <li class="list-group-item">
+                    {{ item.product.name }} ({{ item.quantity }} x ${{ "%.2f"|format(item.price) }})
+                </li>
+                {% endfor %}
+            </ul>
+            #}
+
+            <p>You will receive an email confirmation shortly.</p>
+            <a href="{{ url_for('home') }}" class="btn-amazon-secondary mt-3">Continue Shopping</a>
+            <a href="{{ url_for('account') }}" class="btn-amazon-secondary mt-3 ms-2">View Your Orders</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+        Could not find order details.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

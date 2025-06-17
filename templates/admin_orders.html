@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container my-5">
+        <h1 class="mb-4">Manage Orders</h1>
+        {% if orders %}
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Order ID</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Order Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Tracking Number</th>
+                        <th scope="col">Items</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.user.username }} ({{ order.user.email }})</td>
+                            <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <form action="{{ url_for('update_order_status', order_id=order.id) }}" method="POST" class="d-flex align-items-center">
+                                    <select name="status" class="form-select form-select-sm me-2" aria-label="Order status">
+                                        <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
+                                        <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                                        <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                                        <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                </form>
+                            </td>
+                            <td>
+                                {# Display tracking number, or a form to add/edit it if desired #}
+                                {% if order.tracking_number %}
+                                    {{ order.tracking_number }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                <ul class="list-unstyled mb-0">
+                                    {% for item in order.items %}
+                                        <li>{{ item.product.name }} (x{{ item.quantity }})</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>₹{{ "%.2f"|format(order.items|sum(attribute='price_at_purchase * quantity')) }}</td>
+                            <td>
+                                {# Add more admin actions here if needed, e.g., view full order details #}
+                                {# Example: Link to a detailed order view page #}
+                                {# <a href="{{ url_for('admin_order_detail', order_id=order.id) }}" class="btn btn-info btn-sm">Details</a> #}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                No orders found.
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

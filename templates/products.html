@@ -1,0 +1,38 @@
+{# templates/products.html #}
+{% extends "base.html" %}
+
+{% block title %}All Products{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">All Products</h1>
+    {% if products %}
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-12">
+                <div class="card flex-row align-items-center p-3 mb-3">
+                    <div class="me-4" style="width: 140px;">
+                        <img src="{{ url_for('static', filename='product_pics/' + product.image_file) }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-height: 120px; object-fit: contain;">
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5><a href="{{ url_for('product_detail', product_id=product.id) }}" class="text-decoration-none text-dark">{{ product.name }}</a></h5>
+                        <div class="mb-1"><strong>Category:</strong> {{ product.category }}</div>
+                        <div class="mb-1"><strong>Price:</strong> <span class="text-success">&#8377;{{ '%.2f' % product.price }}</span></div>
+                        <div class="mb-2"><strong>Description:</strong> {{ product.description }}</div>
+                        <div class="mb-1"><strong>Stock:</strong> {{ product.stock }}</div>
+                    </div>
+                    <div class="ms-auto">
+                        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" class="d-flex align-items-center">
+                            <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control form-control-sm me-2" style="width: 70px;">
+                            <button type="submit" class="btn-amazon">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">No products found.</div>
+    {% endif %}
+</div>
+{% endblock %}

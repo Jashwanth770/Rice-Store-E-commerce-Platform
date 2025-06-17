@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Manage Order #{{ order.id }}</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Order Information</h4>
+                <p><strong>Customer:</strong> <a href="{{ url_for('view_customer_details', user_id=customer.id) }}">{{ customer.username }}</a> ({{ customer.email }})</p>
+                <p><strong>Order Date:</strong> {{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p><strong>Total Price:</strong> ₹{{ "%.2f" | format(order.total_price) }}</p>
+                <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+                <p><strong>Current Status:</strong> <strong>{{ order.status }}</strong></p>
+                {% if order.tracking_number %}
+                    <p><strong>Tracking Number:</strong> {{ order.tracking_number }}</p>
+                {% endif %}
+                {% if order.carrier_name %}
+                    <p><strong>Carrier:</strong> {{ order.carrier_name }}</p>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <h4>Update Order Status</h4>
+                <form action="{{ url_for('update_order_status', order_id=order.id) }}" method="POST">
+                    <div class="form-group mb-3">
+                        <label for="status">Change Status:</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
+                            <option value="Payment Received" {% if order.status == 'Payment Received' %}selected{% endif %}>Payment Received</option>
+                            <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                            <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                            <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="tracking_number">Tracking Number (if shipped):</label>
+                        <input type="text" class="form-control" id="tracking_number" name="tracking_number" value="{{ order.tracking_number if order.tracking_number else '' }}">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="carrier_name">Carrier Name (e.g., FedEx, UPS, Local Delivery):</label>
+                        <input type="text" class="form-control" id="carrier_name" name="carrier_name" value="{{ order.carrier_name if order.carrier_name else '' }}">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="note">Internal Note (for timeline):</label>
+                        <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn-amazon">Update Order</button>
+                </form>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <h4>Order Items</h4>
+        <ul class="list-group mb-4">
+            {% for item in detailed_items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <img src="{{ url_for('static', filename='product_pics/' + item.image_file) }}" alt="{{ item.name }}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                        {{ item.name }}
+                        <br>
+                        <small class="text-muted">{{ item.quantity }} kg x ₹{{ "%.2f" | format(item.price_at_purchase) }}</small>
+                    </div>
+                    <span>₹{{ "%.2f" | format(item.subtotal) }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="text-end mb-4">
+            <h5>Total Price: ₹{{ "%.2f" | format(order.total_price) }}</h5>
+        </div>
+
+        <hr class="my-4">
+
+        <h4>Order History / Log</h4>
+        {% if order_logs %}
+            <ul class="list-group">
+                {% for log in order_logs %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1">
+                                {% if log.status_change_to %}
+                                    Status Changed to: <strong>{{ log.status_change_to }}</strong>
+                                    {% if log.status_change_from %}<small class="text-muted"> (from {{ log.status_change_from }})</small>{% endif %}
+                                {% else %}
+                                    Order Update
+                                {% endif %}
+                            </h6>
+                            {% if log.note %}
+                                <p class="mb-1">{{ log.note }}</p>
+                            {% endif %}
+                            <small class="text-muted">
+                                {{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                                {% if log.updated_by %}
+                                    by {{ log.updated_by.username }} ({{ log.updated_by.role }})
+                                {% endif %}
+                            </small>
+                        </div>
+                        <span class="badge bg-info rounded-pill">Event</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No history entries for this order yet.</p>
+        {% endif %}
+
+        <div class="mt-4">
+            <a href="{{ url_for('admin_order_list') }}" class="btn-amazon-secondary">Back to Order List</a>
+        </div>
+    </div>
+{% endblock content %}

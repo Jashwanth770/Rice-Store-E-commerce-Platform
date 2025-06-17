@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>{{ title }}</h1>
+        </div>
+        <div class="col text-end">
+            {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('admin_orders') }}" class="btn-amazon-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Orders
+            </a>
+            {% else %}
+            <a href="{{ url_for('orders') }}" class="btn-amazon-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Orders
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Order Items -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Order Items</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.order_items %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>&#8377;{{ '%.2f' % item.price_at_purchase }}</td>
+                                    <td>&#8377;{{ '%.2f' % (item.quantity * item.price_at_purchase) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total Amount:</strong></td>
+                                    <td><strong>&#8377;{{ '%.2f' % order.total_amount }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Order Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Order Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Order Date:</strong> {{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                    <p><strong>Customer:</strong> {{ order.customer.username }}</p>
+                    <p><strong>Email:</strong> {{ order.customer.email }}</p>
+                    {% if order.customer.phone_number %}
+                    <p><strong>Phone:</strong> {{ order.customer.phone_number }}</p>
+                    {% endif %}
+                    <p><strong>Address:</strong> {{ order.address }}</p>
+                    
+                    <!-- Payment Status -->
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Payment Status:</strong></label>
+                        {% if current_user.role == 'admin' %}
+                        <div class="dropdown">
+                            <button class="btn-amazon-secondary dropdown-toggle" type="button" id="paymentStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ order.status }}
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="paymentStatusDropdown">
+                                <li>
+                                    <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST">
+                                        <input type="hidden" name="status" value="Pending">
+                                        <button type="submit" class="dropdown-item">Pending</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST">
+                                        <input type="hidden" name="status" value="Pending COD">
+                                        <button type="submit" class="dropdown-item">Pending COD</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST">
+                                        <input type="hidden" name="status" value="Payment Pending">
+                                        <button type="submit" class="dropdown-item">Payment Pending</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST">
+                                        <input type="hidden" name="status" value="Shipped">
+                                        <button type="submit" class="dropdown-item">Shipped</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST">
+                                        <input type="hidden" name="status" value="Delivered">
+                                        <button type="submit" class="dropdown-item">Delivered</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST">
+                                        <input type="hidden" name="status" value="Cancelled">
+                                        <button type="submit" class="dropdown-item text-danger">Cancelled</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        {% else %}
+                        <span class="badge {% if order.status == 'Pending' %}bg-warning
+                                         {% elif order.status == 'Pending COD' %}bg-info
+                                         {% elif order.status == 'Payment Pending' %}bg-danger
+                                         {% elif order.status == 'Shipped' %}bg-primary
+                                         {% elif order.status == 'Delivered' %}bg-success
+                                         {% else %}bg-secondary{% endif %}">
+                            {{ order.status }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} 

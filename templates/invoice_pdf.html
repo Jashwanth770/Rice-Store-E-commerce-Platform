@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice #{{ order.id }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .header { text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #eee; }
+        .total { text-align: right; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Invoice #{{ order.id }}</h2>
+        <p>Date: {{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</p>
+    </div>
+    <p><strong>Customer:</strong> {{ order.customer.username }} ({{ order.customer.email }})</p>
+    <p><strong>Address:</strong> {{ order.address }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.order_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>&#8377;{{ '%.2f' % item.price_at_purchase }}</td>
+                <td>&#8377;{{ '%.2f' % (item.quantity * item.price_at_purchase) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="total">Total Amount:</td>
+                <td class="total">&#8377;{{ '%.2f' % order.total_amount }}</td>
+            </tr>
+        </tfoot>
+    </table>
+    <p>Thank you for your order!</p>
+</body>
+</html> 

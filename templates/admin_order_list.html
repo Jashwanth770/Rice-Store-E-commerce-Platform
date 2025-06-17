@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="mb-4">Manage Orders</h1>
+
+    {% if orders %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Order ID</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Total Price</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.customer.username }}</td>
+                    <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>₹{{ "%.2f"|format(order.total_price) }}</td>
+                    <td>
+                        <form action="{{ url_for('update_order_status', order_id=order.id) }}" method="POST" class="d-inline">
+                            <select name="status" class="form-select form-select-sm d-inline w-auto">
+                                <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
+                                <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                                <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                                <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-outline-secondary ms-1">Update</button>
+                        </form>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('order_detail', order_id=order.id) }}" class="btn btn-info btn-sm">View Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No orders found.</p>
+    {% endif %}
+{% endblock content %}

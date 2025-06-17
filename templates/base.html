@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Rice Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+    body {
+        background-color: #f3f3f3;
+        font-family: 'Amazon Ember', Arial, sans-serif;
+        color: #111;
+    }
+    .btn-amazon {
+        background-color: #ffd814;
+        color: #111;
+        border: 1px solid #fcd200;
+        border-radius: 8px;
+        font-weight: bold;
+        padding: 8px 24px;
+        box-shadow: 0 2px 5px rgba(213, 217, 217, 0.15);
+        transition: background 0.2s, box-shadow 0.2s;
+    }
+    .btn-amazon:hover, .btn-amazon:focus {
+        background-color: #f7ca00;
+        color: #111;
+        box-shadow: 0 4px 10px rgba(213, 217, 217, 0.25);
+        text-decoration: none;
+    }
+    .btn-amazon-secondary {
+        background-color: #e7e9ec;
+        color: #111;
+        border: 1px solid #adb1b8;
+        border-radius: 8px;
+        font-weight: bold;
+        padding: 8px 24px;
+        margin-left: 8px;
+        transition: background 0.2s, box-shadow 0.2s;
+    }
+    .btn-amazon-secondary:hover, .btn-amazon-secondary:focus {
+        background-color: #d5d9d9;
+        color: #111;
+        text-decoration: none;
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="{{ url_for('home') }}">Rice Store</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('cart') }}">Cart</a>
+                        </li>
+                        {% if current_user.role == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin_products') }}">Manage Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin_orders') }}">Manage Orders</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('account') }}">Account</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-amazon" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('orders') }}">My Orders</a>
+                        </li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Login</a></li>
+                        <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="container mt-3">
+              {% set category, message = messages[-1] %}
+              {% if message != 'Item removed from cart.' %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <div class="footer-container">
+            <p>&copy; {{ current_year }} Rice Store. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

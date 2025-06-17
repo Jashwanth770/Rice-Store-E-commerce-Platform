@@ -1,0 +1,24 @@
+@app.route('/admin/customer/<int:user_id>')
+@role_required(['admin', 'customer_service'])
+def view_customer_details(user_id):
+    user = User.query.get_or_404(user_id)
+    user_orders = Order.query.filter_by(user_id=user.id).order_by(Order.order_date.desc()).all()
+
+    for order in user_orders:
+        order.detailed_items = []
+        for item in order.items:
+            product = Product.query.get(item.product_id)
+            if product:
+                order.detailed_items.append({
+                    'product_name': product.name,
+                    'quantity': item.quantity,
+                    'price': item.price_at_purchase
+                })
+            else:
+                order.detailed_items.append({
+                    'product_name': 'Product Deleted',
+                    'quantity': item.quantity,
+                    'price': item.price_at_purchase
+                })
+
+    return render_template('admin_customer_details.html', user=user, orders=user_orders)

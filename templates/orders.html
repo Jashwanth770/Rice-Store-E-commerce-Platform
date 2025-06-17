@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}My Orders{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">My Orders</h1>
+    {% if orders %}
+        <div class="row row-cols-1 g-4">
+            {% for order in orders %}
+            <div class="col">
+                <div class="card h-100 flex-row align-items-center p-3">
+                    <div class="flex-grow-1">
+                        <div class="d-flex flex-wrap align-items-center mb-2">
+                            <h5 class="mb-0 me-3">Order #{{ order.id }}</h5>
+                            <span class="badge {% if order.status == 'Pending' %}bg-warning
+                                             {% elif order.status == 'Pending COD' %}bg-info
+                                             {% elif order.status == 'Payment Pending' %}bg-danger
+                                             {% elif order.status == 'Shipped' %}bg-primary
+                                             {% elif order.status == 'Delivered' %}bg-success
+                                             {% else %}bg-secondary{% endif %} ms-2">
+                                {{ order.status }}
+                            </span>
+                        </div>
+                        <div class="mb-1"><strong>Date:</strong> {{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</div>
+                        <div class="mb-1"><strong>Total:</strong> &#8377;{{ '%.2f' % order.total_amount }}</div>
+                    </div>
+                    <div class="ms-auto">
+                        <a href="{{ url_for('order_detail', order_id=order.id) }}" class="btn-amazon">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">You have no orders yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Order Details #{{ order.id }}</h2>
+        <p class="text-muted">Placed on: {{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</p>
+        <p>Current Status: <strong>{{ order.status }}</strong></p>
+
+        {% if order.tracking_number %}
+            <p>Tracking Number:
+                {% if tracking_url %}
+                    <a href="{{ tracking_url }}" target="_blank"><strong>{{ order.tracking_number }}</strong> (Track with {{ order.carrier_name }})</a>
+                {% else %}
+                    <strong>{{ order.tracking_number }}</strong> (Carrier: {{ order.carrier_name }})
+                {% endif %}
+            </p>
+        {% endif %}
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-7">
+                <h4>Order Items</h4>
+                <ul class="list-group mb-4">
+                    {% for item in detailed_items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <img src="{{ url_for('static', filename='product_pics/' + item.image_file) }}" alt="{{ item.name }}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                                <a href="{{ url_for('product_detail', product_id=item.product_id) }}">{{ item.name }}</a>
+                                <br>
+                                <small class="text-muted">{{ item.quantity }} kg x ₹{{ "%.2f" | format(item.price_at_purchase) }}</small>
+                            </div>
+                            <span>₹{{ "%.2f" | format(item.subtotal) }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="text-end mb-4">
+                    <h5>Total Price: ₹{{ "%.2f" | format(order.total_price) }}</h5>
+                    <p>Payment Method: {{ order.payment_method }}</p>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <h4>Order Timeline</h4>
+                {% if order_logs %}
+                    <ul class="list-group">
+                        {% for log in order_logs %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">
+                                        {% if log.status_change_to %}
+                                            Status: <strong>{{ log.status_change_to }}</strong>
+                                        {% else %}
+                                            Update
+                                        {% endif %}
+                                    </h6>
+                                    {% if log.note %}
+                                        <small class="text-muted">{{ log.note }}</small>
+                                    {% endif %}
+                                    <br>
+                                    {% if log.updated_by %}
+                                        <small class="text-muted">by {{ log.updated_by.username }} ({{ log.updated_by.role }})</small>
+                                    {% endif %}
+                                </div>
+                                <span class="badge bg-secondary rounded-pill">{{ log.timestamp.strftime('%b %d, %I:%M %p') }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No detailed history available for this order yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ url_for('order_history') }}" class="btn btn-secondary">Back to Order History</a>
+            {% if current_user.is_admin() or current_user.is_warehouse_manager() or current_user.is_sales_representative() or current_user.is_customer_service() %}
+                <a href="{{ url_for('admin_order_detail', order_id=order.id) }}" class="btn btn-info ms-2">View in Admin Panel</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="mb-4">Manage Products</h1>
+    {# Changed endpoint from 'add_product_admin' to 'add_product' #}
+    <a href="{{ url_for('add_product') }}" class="btn-amazon mb-3">Add New Product</a>
+
+    {% if products %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>
+                        <img src="{{ url_for('static', filename='product_pics/' + product.image_file) }}" alt="{{ product.name }}" style="width: 50px; height: 50px; object-fit: cover;">
+                    </td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category }}</td>
+                    <td>₹{{ "%.2f"|format(product.price) }}</td>
+                    <td>{{ product.stock }} kg</td>
+                    <td>
+                        {# Changed endpoint from 'edit_product_admin' to 'edit_product' #}
+                        <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn-amazon btn-sm">Edit</a>
+                        {# Changed endpoint from 'delete_product_admin' to 'delete_product' #}
+                        <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                            <button type="submit" class="btn-amazon-secondary btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No products added yet.</p>
+    {% endif %}
+{% endblock content %}

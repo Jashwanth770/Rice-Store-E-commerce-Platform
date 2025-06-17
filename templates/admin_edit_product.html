@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="mb-4">Edit Product: {{ product.name }}</h1>
+    <div class="content-section">
+        <form method="POST" action="" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="name" class="form-label">Product Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="5" required>{{ product.description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price (per kg)</label>
+                <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ product.price }}" min="0" required>
+            </div>
+            <div class="mb-3">
+                <label for="stock" class="form-label">Stock (in kg)</label>
+                <input type="number" class="form-control" id="stock" name="stock" value="{{ product.stock }}" min="0" required>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="Basmati" {% if product.category == 'Basmati' %}selected{% endif %}>Basmati</option>
+                    <option value="Non-Basmati" {% if product.category == 'Non-Basmati' %}selected{% endif %}>Non-Basmati</option>
+                    <option value="Brown Rice" {% if product.category == 'Brown Rice' %}selected{% endif %}>Brown Rice</option>
+                    <option value="Jasmine" {% if product.category == 'Jasmine' %}selected{% endif %}>Jasmine</option>
+                    <option value="Sticky Rice" {% if product.category == 'Sticky Rice' %}selected{% endif %}>Sticky Rice</option>
+                    <option value="Wild Rice" {% if product.category == 'Wild Rice' %}selected{% endif %}>Wild Rice</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Product Image</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                <small class="form-text text-muted">Upload new image to replace current.</small>
+                {% if product.image_file %}
+                    <img src="{{ url_for('static', filename='product_pics/' + product.image_file) }}" alt="Current Image" style="width: 100px; height: 100px; object-fit: cover; margin-top: 10px;">
+                {% endif %}
+            </div>
+            <button type="submit" class="btn-amazon">Update Product</button>
+            <a href="{{ url_for('admin_product_list') }}" class="btn-amazon-secondary">Cancel</a>
+        </form>
+    </div>
+{% endblock content %}

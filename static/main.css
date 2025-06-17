@@ -1,0 +1,300 @@
+/* Basic Reset & Body Styles */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #eaeded;
+    color: #111;
+}
+
+/* Header Styling */
+header {
+    background-color: #232f3e;
+    color: white;
+    padding: 10px 0;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo a {
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Search Bar Styling */
+.search-bar {
+    display: flex;
+    flex-grow: 1; /* Allows search bar to take up available space in the middle */
+    max-width: 600px; /* Max width for desktop */
+    min-width: 200px; /* Ensure it has a minimum width */
+    order: 2; /* Explicitly set order to be in the middle */
+}
+
+.search-bar input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    background-color: #febd69;
+    color: #111;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.search-bar button:hover {
+    background-color: #f3a847;
+}
+
+/* Navigation Styling */
+.main-nav {
+    order: 3; /* Explicitly set order to be on the right */
+    white-space: nowrap;
+}
+
+.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Display main nav items horizontally */
+    align-items: center; /* Align 'Home' and the rest of the links */
+    gap: 15px; /* Space between 'Home' and the other links group */
+}
+
+.main-nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    padding: 5px 0;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
+.main-nav ul li a:hover {
+    color: #febd69;
+}
+
+/* Styling for the grouped navigation links on the right */
+.nav-links ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 15px; /* Space between the right-side nav links */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column; /* Stack items vertically on smaller screens */
+        align-items: flex-start; /* Align items to the left */
+        gap: 10px;
+    }
+
+    .logo, .search-bar, .main-nav {
+        width: 100%; /* Make them take full width */
+        order: unset; /* Remove explicit order for stacking */
+        max-width: none; /* Remove max-width for search bar */
+    }
+
+    .search-bar input[type="text"] {
+        border-radius: 4px; /* Full border-radius on small screens */
+    }
+
+    .search-bar button {
+        border-radius: 4px; /* Full border-radius on small screens */
+    }
+    .search-bar input[type="text"], .search-bar button {
+        /* Reset individual border-radius for combined look */
+        border-radius: 4px;
+    }
+    .search-bar input[type="text"] {
+        border-radius: 4px 0 0 4px; /* Re-apply specific for combined look */
+    }
+    .search-bar button {
+        border-radius: 0 4px 4px 0; /* Re-apply specific for combined look */
+    }
+
+
+    .main-nav ul {
+        flex-direction: column; /* Stack main nav items vertically */
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .nav-links ul {
+        flex-direction: column; /* Stack right-side nav links vertically */
+        align-items: flex-start;
+        gap: 5px;
+        margin-top: 5px; /* Add a little space from 'Home' if they stack */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Further adjustments for very small screens if needed */
+    .search-bar {
+        flex-direction: column; /* Stack input and button */
+    }
+    .search-bar input[type="text"] {
+        border-radius: 4px; /* Full rounded corners when stacked */
+        margin-bottom: 5px; /* Space between input and button */
+    }
+    .search-bar button {
+        border-radius: 4px; /* Full rounded corners when stacked */
+        width: 100%; /* Button takes full width */
+    }
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+footer {
+    background-color: #232f3e;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Amazon-like product card styles */
+.amazon-product-card {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e3e6e6;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    transition: box-shadow 0.2s;
+}
+.amazon-product-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+}
+.amazon-product-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #f7f7f7;
+    margin-right: 32px;
+}
+.amazon-product-details {
+    flex: 1;
+}
+.amazon-product-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 6px;
+    text-decoration: none;
+}
+.amazon-product-title:hover {
+    color: #c45500;
+    text-decoration: underline;
+}
+.amazon-product-category {
+    font-size: 0.98rem;
+    color: #555;
+    margin-bottom: 4px;
+}
+.amazon-product-price {
+    font-size: 1.1rem;
+    color: #b12704;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+.amazon-product-desc {
+    font-size: 0.97rem;
+    color: #333;
+    margin-bottom: 8px;
+}
+.amazon-product-stock {
+    font-size: 0.95rem;
+    color: #007600;
+    margin-bottom: 8px;
+}
+.amazon-product-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 180px;
+}
+.amazon-product-actions form {
+    display: flex;
+    align-items: center;
+}
+.amazon-product-qty {
+    width: 60px;
+    margin-right: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+}
+.btn-amazon {
+    background-color: #ffd814;
+    color: #111;
+    border: 1px solid #fcd200;
+    border-radius: 8px;
+    font-weight: bold;
+    padding: 8px 24px;
+    box-shadow: 0 2px 5px rgba(213, 217, 217, 0.15);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.btn-amazon:hover, .btn-amazon:focus {
+    background-color: #f7ca00;
+    color: #111;
+    box-shadow: 0 4px 10px rgba(213, 217, 217, 0.25);
+    text-decoration: none;
+}

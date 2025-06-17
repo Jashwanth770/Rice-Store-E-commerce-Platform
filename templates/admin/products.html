@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Products{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Manage Products</h1>
+        </div>
+        <div class="col text-end">
+            <a href="{{ url_for('admin_add_product') }}" class="btn-amazon">
+                <i class="fas fa-plus"></i> Add New Product
+            </a>
+        </div>
+    </div>
+
+    {% if products %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="{{ url_for('static', filename='product_pics/' + product.image_file) }}" 
+                             alt="{{ product.name }}" 
+                             class="img-fluid rounded-start h-100 object-fit-cover">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">Category: {{ product.category }}</small><br>
+                                <strong>Price:</strong> &#8377;{{ '%.2f' % product.price }}<br>
+                                <strong>Stock:</strong> {{ product.stock }}
+                            </p>
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('admin_update_product', product_id=product.id) }}" 
+                                   class="btn-amazon btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <button type="button" 
+                                        class="btn-amazon-secondary btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteModal{{ product.id }}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Modal -->
+            <div class="modal fade" id="deleteModal{{ product.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Delete</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete the product "{{ product.name }}"?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-amazon-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form action="{{ url_for('admin_delete_product', product_id=product.id) }}" method="POST">
+                                <button type="submit" class="btn-amazon-secondary">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No products found. <a href="{{ url_for('admin_add_product') }}">Add your first product</a>.
+    </div>
+    {% endif %}
+</div>
+{% endblock content %} 
